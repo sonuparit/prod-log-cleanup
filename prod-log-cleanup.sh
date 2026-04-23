@@ -378,10 +378,12 @@ main() {
     directory_cleanup
     print_summary
     check_cleanup_effectiveness
+    
     if [ "$DRY_RUN" = false ]; then
       setup_cron
       send_notifications
     fi
+    
     echo ""
     echo "-------------------------------------------------"
     echo "Disk Cleanup Finished"
