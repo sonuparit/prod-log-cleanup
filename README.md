@@ -1,4 +1,4 @@
-# Linux Log Cleanup System (Bash) – Safe, Automated & Observable
+# Production-Grade Log Management & Cleanup Automation (bash)
 
 **⚡ Built with a production mindset — focused on safety, visibility, and automation.**
 
