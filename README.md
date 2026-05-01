@@ -1,4 +1,4 @@
-# Production-Grade Log Management & Cleanup Automation (bash)
+# Production-Grade Log Management & Cleanup Automation from scratch (bash)
 
 **⚡ Built with a production mindset — focused on safety, visibility, and automation.**
 
@@ -18,6 +18,7 @@ It’s a **safe, automated log management system** designed to:
 - Run automatically using cron  
 
 The goal was simple:  
+
 - **Build something that behaves like a real production tool, not just a one-time script.**
 - **Designed to handle real-world log cleanup scenarios safely, not just ideal cases.**
 
@@ -30,14 +31,14 @@ The goal was simple:
 - **[Solution](#-solution)**
 - **[Why Not logrotate?](#️-why-not-logrotate)**
 - **[Key Features](#-key-features)**
-    - **[Dependency Checks](#1--dependency-checks)**
-    - **[Script Lock](#2--script-lock)**
-    - **[Configuration (logs.env)](#3-️-configuration-logsenv)**
-    - **[Logging Mode](#4--logging-mode)**
-    - **[Dry Run & Actual Run](#5--dry-run--actual-run)**
-    - **[Cleanup Strategies](#6--cleanup-strategies)**
-    - **[Cron Automation](#7-️-cron-automation)**
-    - **[Monitoring & Alerts](#8--monitoring--alerts)**
+  - **[Dependency Checks](#1--dependency-checks)**
+  - **[Script Lock](#2--script-lock)**
+  - **[Configuration (logs.env)](#3-️-configuration-logsenv)**
+  - **[Logging Mode](#4--logging-mode)**
+  - **[Dry Run & Actual Run](#5--dry-run--actual-run)**
+  - **[Cleanup Strategies](#6--cleanup-strategies)**
+  - **[Cron Automation](#7-️-cron-automation)**
+  - **[Monitoring & Alerts](#8--monitoring--alerts)**
 - **[How to Run](#️-how-to-run)**
 - **[Challenges & Learnings](#-challenges--learnings)**
 - **[Limitations](#️-limitations)**
@@ -181,6 +182,7 @@ You can think of it as a **complementary tool**, especially useful when:
 **Designed with production safety in mind — not just log deletion.**
 
 ### 1. 🔍 Dependency Checks
+
 Before doing anything, the script checks if required tools are available (`journalctl`, `curl`, `msmtp`, etc.).
 
 ![alt text](screenshots/screenshot09.png)
@@ -191,6 +193,7 @@ If something is missing, it exits early with a clear message.
 ---
 
 ### 2. 🔒 Script Lock
+
 A lock file is used to make sure only one instance runs at a time.
 
 ![alt text](screenshots/screenshot10.png)
@@ -200,9 +203,11 @@ This prevents situations where multiple cleanup processes run together and delet
 ---
 
 ### 3. ⚙️ Configuration (logs.env)
+
 All behavior is controlled through a simple `logs.env` file.
 
 This includes:
+
 - directories to scan  
 - retention rules (days, size, file count)  
 - notification settings  
@@ -215,6 +220,7 @@ No need to edit the script every time — just update the config.
 ---
 
 ### 4. 📝 Logging Mode
+
 The script supports two logging modes:
 
 - **Screen + File logging** (using `tee`)  
@@ -223,12 +229,14 @@ The script supports two logging modes:
 ![alt text](screenshots/screenshot12.png)
 
 This makes it usable both for:
+
 - manual runs (debugging)  
 - automated runs (cron jobs)
 
 ---
 
 ### 5. 🧪 Dry Run & Actual Run
+
 Runs in **dry-run mode by default**.
 
 - Dry run → shows what *would* be deleted  and how much space *would* be freed
@@ -241,6 +249,7 @@ This adds a safety layer before touching real data.
 ---
 
 ### 6. 🧹 Cleanup Strategies
+
 Handles logs in two ways:
 
 - **Journal Cleanup**  
@@ -260,11 +269,13 @@ Also avoids touching journal logs while scanning directories.
 ---
 
 ### 7. ⏱️ Cron Automation
+
 The script can automatically register / deregister itself as a cron job on the basis of `logs.env` file.
 
 ![alt text](screenshots/screenshot16.png)
 
 This makes it easy to:
+
 - schedule regular cleanups  
 - enable/disable automation from config  
 
@@ -295,7 +306,7 @@ This makes it easy to:
 - **Email Notification**  
   Sends formatted report using `msmtp`  
 
-  ![alt text](screenshots/screenshot21.png) 
+  ![alt text](screenshots/screenshot21.png)
 
 The script is designed to **avoid surprises**, not just clean logs.
 
@@ -319,16 +330,19 @@ Update the configuration file based on your needs:
 - cron schedule
 
 ### 3. Run in Dry Run mode (default)
+
 ./prod-log-management.sh
 
 This will:
+
 - **simulate the cleanup process**
 - **show what will be removed**
 - **calculate expected space savings**
 
-![alt text](screenshots/screenshot22.png) 
+![alt text](screenshots/screenshot22.png)
 
 ### 4. Run actual cleanup
+
 DRY_RUN=false ./prod-log-management.sh
 
 This will:
@@ -339,7 +353,7 @@ This will:
 
 ### 5. Optional: Enable cron automation
 
-![alt text](screenshots/screenshot25.png) 
+![alt text](screenshots/screenshot25.png)
 
 Set CRON_JOB=true in logs.env, then run:
 
@@ -349,41 +363,42 @@ Set CRON_JOB=true in logs.env, then run:
 
 The script will register itself in cron.
 
-![alt text](screenshots/screenshot27.png) 
+![alt text](screenshots/screenshot27.png)
 
 If `CRON_JOB=false`, then the script will automatically remove itself from cron
 
-![alt text](screenshots/screenshot30.png) 
+![alt text](screenshots/screenshot30.png)
 
 ### 6. 📣 Notifications (Slack & Email)
+
 **Configure Slack Notification (Optional)**
 
-![alt text](screenshots/screenshot31.png) 
+![alt text](screenshots/screenshot31.png)
 
 To enable Slack alerts, add your webhook URL in logs.env:
 
-SLACK_WEBHOOK="https://hooks.slack.com/services/..."
+SLACK_WEBHOOK="<https://hooks.slack.com/services/>..."
 
-![alt text](screenshots/screenshot32.png) 
+![alt text](screenshots/screenshot32.png)
 
 Once configured, the script will send a summary message after execution.
 
-![alt text](screenshots/screenshot38.png) 
+![alt text](screenshots/screenshot38.png)
 
 Watch for the notification
 
-![alt text](screenshots/screenshot34.png) 
+![alt text](screenshots/screenshot34.png)
 
 👉 If not configured, the script will skip Slack notification safely.
 
-7. Configure Email Notification (Optional)
+1. Configure Email Notification (Optional)
 
 To enable email alerts, configure the following in logs.env:
 
-EMAIL_TO="your@email.com"  
-EMAIL_FROM="your@email.com"
+EMAIL_TO="<your@email.com>"  
+EMAIL_FROM="<your@email.com>"
 
-![alt text](screenshots/screenshot39.png) 
+![alt text](screenshots/screenshot39.png)
 
 The script uses msmtp to send a formatted email report.
 
@@ -392,14 +407,15 @@ Make sure:
 - msmtp is installed
 - SMTP settings are properly configured in your system
 
-![alt text](screenshots/screenshot33.png) 
+![alt text](screenshots/screenshot33.png)
 
 👉 If email is not configured, the script will skip it without failing.
 
-![alt text](screenshots/screenshot36.png) 
+![alt text](screenshots/screenshot36.png)
 
 ⚠️ Notes:
-- Notifications are triggered automatically after execution. 
+
+- Notifications are triggered automatically after execution.
 - They can work in both dry-run and actual run modes
 - Failures in notification do not stop the script
 
